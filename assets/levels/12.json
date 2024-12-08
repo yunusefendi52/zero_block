@@ -1,0 +1,104 @@
+{
+    "name": "12",
+    "tiles": [
+        {
+            "type": 7,
+            "vector": {
+                "x": 2,
+                "y": 3
+            },
+            "data": "+4",
+            "lifetime": 1
+        },
+        {
+            "type": 1,
+            "vector": {
+                "x": 2,
+                "y": 4
+            },
+            "data": "3",
+            "lifetime": 1
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 3,
+                "y": 2
+            },
+            "data": "-3",
+            "lifetime": 1
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 3,
+                "y": 3
+            },
+            "data": "-3",
+            "lifetime": 3
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 3,
+                "y": 4
+            },
+            "data": "-4",
+            "lifetime": 1
+        },
+        {
+            "type": 1,
+            "vector": {
+                "x": 4,
+                "y": 2
+            },
+            "data": "9",
+            "lifetime": 1
+        },
+        {
+            "type": 7,
+            "vector": {
+                "x": 4,
+                "y": 3
+            },
+            "data": "+6",
+            "lifetime": 3
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 4,
+                "y": 4
+            },
+            "data": "-12",
+            "lifetime": 1
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 5,
+                "y": 2
+            },
+            "data": "-5",
+            "lifetime": 1
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 5,
+                "y": 3
+            },
+            "data": "-4",
+            "lifetime": 2
+        },
+        {
+            "type": 1,
+            "vector": {
+                "x": 5,
+                "y": 4
+            },
+            "data": "7",
+            "lifetime": 1
+        }
+    ]
+}

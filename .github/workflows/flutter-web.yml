@@ -1,0 +1,30 @@
+name: Flutter Web
+on:
+  workflow_dispatch:
+    inputs:
+      integration-test:
+        description: 'Whether to run integration test (default is web-server)'
+        default: false
+        required: false
+        type: boolean
+
+jobs:
+  build:
+    name: Build for web
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/workflows/templates/flutter-template
+      - name: Run Integration Test
+        if: ${{ inputs.integration-test }}
+        shell: pwsh
+        run: |
+          ./IntegrationTest.ps1
+      - run: flutter build web
+      - uses: jsmrcaga/action-netlify-deploy@v1.1.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_DEPLOY_MESSAGE: "Deploy v${{ github.ref }}"
+          NETLIFY_DEPLOY_TO_PROD: true
+          build_directory: build/web

@@ -1,0 +1,95 @@
+{
+    "name": "13",
+    "tiles": [
+        {
+            "type": 1,
+            "vector": {
+                "x": 1,
+                "y": 2
+            },
+            "data": "13",
+            "lifetime": 1
+        },
+        {
+            "type": 1,
+            "vector": {
+                "x": 1,
+                "y": 3
+            },
+            "data": "22",
+            "lifetime": 1
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 2,
+                "y": 2
+            },
+            "data": "-7",
+            "lifetime": 2
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 2,
+                "y": 3
+            },
+            "data": "-4",
+            "lifetime": 2
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 3,
+                "y": 2
+            },
+            "data": "-6",
+            "lifetime": 4
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 3,
+                "y": 3
+            },
+            "data": "-3",
+            "lifetime": 4
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 4,
+                "y": 2
+            },
+            "data": "-5",
+            "lifetime": 4
+        },
+        {
+            "type": 2,
+            "vector": {
+                "x": 4,
+                "y": 3
+            },
+            "data": "-2",
+            "lifetime": 4
+        },
+        {
+            "type": 1,
+            "vector": {
+                "x": 5,
+                "y": 2
+            },
+            "data": "22",
+            "lifetime": 1
+        },
+        {
+            "type": 1,
+            "vector": {
+                "x": 5,
+                "y": 3
+            },
+            "data": "29",
+            "lifetime": 1
+        }
+    ]
+}

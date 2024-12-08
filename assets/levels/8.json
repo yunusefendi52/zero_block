@@ -1,0 +1,104 @@
+{
+    "name": "8",
+    "tiles": [
+        {
+            "type": 7,
+            "vector": {
+                "x": 0,
+                "y": 2
+            },
+            "data": "+3",
+            "lifetime": 1
+        },
+        {
+            "type": 7,
+            "vector": {
+                "x": 1,
+                "y": 2
+            },
+            "data": "+4",
+            "lifetime": 1
+        },
+        {
+            "type": 7,
+            "vector": {
+                "x": 2,
+                "y": 1
+            },
+            "data": "+7",
+            "lifetime": 1
+        },
+        {
+            "type": 7,
+            "vector": {
+                "x": 2,
+                "y": 2
+            },
+            "data": "+3",
+            "lifetime": 1
+        },
+        {
+            "type": 7,
+            "vector": {
+                "x": 3,
+                "y": 1
+            },
+            "data": "+4",
+            "lifetime": 1
+        },
+        {
+            "type": 7,
+            "vector": {
+                "x": 3,
+                "y": 2
+            },
+            "data": "+3",
+            "lifetime": 2
+        },
+        {
+            "type": 7,
+            "vector": {
+                "x": 3,
+                "y": 3
+            },
+            "data": "+5",
+            "lifetime": 1
+        },
+        {
+            "type": 1,
+            "vector": {
+                "x": 3,
+                "y": 4
+            },
+            "data": "-19",
+            "lifetime": 1
+        },
+        {
+            "type": 7,
+            "vector": {
+                "x": 4,
+                "y": 2
+            },
+            "data": "+5",
+            "lifetime": 1
+        },
+        {
+            "type": 7,
+            "vector": {
+                "x": 5,
+                "y": 2
+            },
+            "data": "+7",
+            "lifetime": 1
+        },
+        {
+            "type": 1,
+            "vector": {
+                "x": 6,
+                "y": 2
+            },
+            "data": "-25",
+            "lifetime": 1
+        }
+    ]
+}
