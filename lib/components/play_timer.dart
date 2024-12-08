@@ -27,7 +27,7 @@ class _PlayTimerState extends State<PlayTimer> {
         return Text(
           readable,
           style: const TextStyle(
-            fontSize: 36,
+            fontSize: 22,
           ),
         );
       },

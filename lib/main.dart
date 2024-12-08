@@ -291,43 +291,6 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (!widget.edit)
-                ValueListenableBuilder<String>(
-                  valueListenable: _store.name,
-                  builder: (context, data, child) {
-                    if (data.isEmpty) {
-                      return const SizedBox();
-                    }
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                      ),
-                      child: Center(
-                        child: ElevatedButton.icon(
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down,
-                          ),
-                          label: Text(data),
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                          ),
-                          onPressed: () async {
-                            final queryParam = await showDialog<String?>(
-                              context: context,
-                              builder: (context) {
-                                return const LevelsPage();
-                              },
-                            );
-                            if (queryParam != null && queryParam.isNotEmpty) {
-                              Navigator.of(context).pushNamed('/$queryParam');
-                            }
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              if (!widget.edit)
                 const SizedBox(
                   height: 5,
                 ),
@@ -413,17 +376,52 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           );
-          late final isLandscapeAndPlayMode =
-              !widget.edit && size.orientation == Orientation.portrait;
           late final playWidgets = Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (!widget.edit)
+                ValueListenableBuilder<String>(
+                  valueListenable: _store.name,
+                  builder: (context, data, child) {
+                    if (data.isEmpty) {
+                      return const SizedBox();
+                    }
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                      ),
+                      child: Center(
+                        child: ElevatedButton.icon(
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down,
+                          ),
+                          label: Text('LEVEL $data'),
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                          ),
+                          onPressed: () async {
+                            final queryParam = await showDialog<String?>(
+                              context: context,
+                              builder: (context) {
+                                return const LevelsPage();
+                              },
+                            );
+                            if (queryParam != null && queryParam.isNotEmpty) {
+                              Navigator.of(context).pushNamed('/$queryParam');
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
               const SizedBox(
-                height: 15,
+                height: 5,
               ),
               ElevatedButton.icon(
                 icon: const Icon(Icons.refresh),
-                label: const Text('Reset'),
+                label: const Text('RESET'),
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                 ),
@@ -431,30 +429,50 @@ class _MyHomePageState extends State<MyHomePage> {
                   _store.reset(false);
                 },
               ),
-              if (isLandscapeAndPlayMode)
-                const SizedBox(
-                  height: 10,
-                ),
-              if (isLandscapeAndPlayMode) const PlayTimer(),
             ],
           );
           late final children = [
-            Expanded(
-              child: Scrollbar(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      headers,
-                      if (widget.edit) editWidgets,
-                      if (!widget.edit) playWidgets,
-                    ],
+            // Row(
+            //   children: [
+            //     headers,
+            //     // if (widget.edit) editWidgets,
+            //     // if (!widget.edit) playWidgets,
+            //     // if (!widget.edit) const PlayTimer(),
+            //   ],
+            // ),
+            // headers,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 15,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'ZERO BLOCK',
+                          style: TextStyle(
+                            fontSize: 24,
+                          ),
+                        ),
+                        Text(
+                          'MOVE BROWN BLOCK UNTIL IT REACHES TO 0',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                  if (!widget.edit) const PlayTimer(),
+                  if (!widget.edit) playWidgets,
+                ],
               ),
             ),
             Expanded(
-              flex: 2,
               child: Padding(
                 padding: const EdgeInsets.all(5),
                 // Important, so the aspect ratio is working when resized to wide landscape
@@ -463,23 +481,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            if (size.orientation == Orientation.landscape)
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (!widget.edit) const PlayTimer(),
-                  ],
-                ),
-              ),
           ];
-          return size.orientation == Orientation.portrait
-              ? Column(
-                  children: children,
-                )
-              : Row(
-                  children: children,
-                );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: children,
+          );
         },
       ),
     );
