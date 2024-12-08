@@ -21,7 +21,7 @@ Devvit.addMenuItem({
         </vstack>
       ),
     });
-    ui.showToast({ text: 'Created post!' });
+    ui.showToast({ text: 'Zero Block game created!' });
     ui.navigateTo(post);
   },
 });
