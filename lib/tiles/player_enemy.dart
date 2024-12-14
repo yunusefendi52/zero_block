@@ -62,9 +62,9 @@ class PlayerEnemy extends StatelessWidget {
                                     lifetimeString,
                                     style: TextStyle(
                                       fontSize:
-                                          100 / 120 * boxConstraints.maxWidth,
+                                          100 / 130 * boxConstraints.maxWidth,
                                       color: Colors.black,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 );

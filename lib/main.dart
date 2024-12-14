@@ -425,9 +425,10 @@ class _MyHomePageState extends State<MyHomePage> {
             // ),
             // headers,
             Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 15,
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 15,
               ),
               child: Row(
                 children: [
