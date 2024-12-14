@@ -50,18 +50,25 @@ class PlayerEnemy extends StatelessWidget {
                           ? Container(
                               height: lifetimeSize,
                               width: lifetimeSize,
-                              clipBehavior: Clip.antiAlias,
+                              // clipBehavior: Clip.antiAlias,
                               decoration: const BoxDecoration(
                                 color: Colors.white,
                                 shape: BoxShape.circle,
                               ),
-                              child: TileText(
-                                lifetimeString,
-                                style: getTextStyle(tileSize, 0.2).copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                              child: LayoutBuilder(
+                                  builder: (context, boxConstraints) {
+                                return Center(
+                                  child: Text(
+                                    lifetimeString,
+                                    style: TextStyle(
+                                      fontSize:
+                                          100 / 120 * boxConstraints.maxWidth,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                );
+                              }),
                             )
                           : const SizedBox(),
                     ),
