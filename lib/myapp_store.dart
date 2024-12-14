@@ -243,8 +243,9 @@ class MyAppStore {
   }) async {
     String jsonString = '';
     if (!isBlank(customLevel)) {
-      final prefs = await SharedPreferences.getInstance();
-      jsonString = prefs.getString(customLevel!)!;
+      final sp = SharedPreferencesAsync();
+      final jsonStringBase64 = (await sp.getString(customLevel!))!;
+      jsonString = utf8.decode(base64Decode(jsonStringBase64));
     } else if (!isBlank(levelId)) {
       jsonString = await rootBundle.loadString('assets/levels/$levelId.json');
     } else {
@@ -319,15 +320,20 @@ class MyAppStore {
 
   Future<bool> saveTiles() async {
     try {
-      final tilesJson = toJson();
-      final prefs = await SharedPreferences.getInstance();
+      final sp = SharedPreferencesAsync();
+      const lastCounterKey = 'level_counter';
+      var lastCount = await sp.getInt(lastCounterKey) ?? 0;
+      lastCount++;
+      final tilesJson = base64Encode(utf8.encode(toJson(lastCount)));
       if (kDebugMode) {
         print(tilesJson);
       }
-      return await prefs.setString(
-        'cust_levels${name.value.trim()}',
+      await sp.setString(
+        'cust_levels$lastCount',
         tilesJson,
       );
+      await sp.setInt(lastCounterKey, lastCount);
+      return true;
     } catch (error) {
       // ignore: avoid_print
       print(error);
@@ -339,11 +345,11 @@ class MyAppStore {
     return jsonDecode(value);
   }
 
-  String toJson() {
-    return jsonEncode(toMap());
+  String toJson(int lastCount) {
+    return jsonEncode(toMap(lastCount));
   }
 
-  Map toMap() {
+  Map toMap(int lastCount) {
     final tilesOnly = players.value.where((element) {
       switch (element.type.value) {
         case PlayerType.main:
@@ -361,7 +367,7 @@ class MyAppStore {
       }
     }).toList();
     return {
-      'name': name.value.trim(),
+      'name': lastCount.toString(),
       'tiles': Player.toMapList(tilesOnly),
     };
   }

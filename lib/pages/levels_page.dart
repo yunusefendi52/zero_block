@@ -23,26 +23,13 @@ class LevelsStore extends ChangeNotifier
       getLevelLoading = true;
       notify();
 
-      var currentLevel = 1;
       levels.clear();
-      while (true) {
-        try {
-          final _ = await rootBundle.load(
-            'assets/levels/$currentLevel.json',
-          );
-          levels.add(
-            LevelData()
-              ..value = currentLevel.toString()
-              ..name = currentLevel.toString(),
-          );
-          currentLevel++;
-        } catch (e) {
-          // TODO: Find a way to check if the file is not found instead of this
-          if (kDebugMode) {
-            print(e);
-          }
-          break;
-        }
+      for (var i = 1; i <= 15; i++) {
+        levels.add(
+          LevelData()
+            ..value = i.toString()
+            ..name = i.toString(),
+        );
       }
     } finally {
       getLevelLoading = false;
@@ -55,11 +42,12 @@ class LevelsStore extends ChangeNotifier
       getCustomLevelLoading = true;
       notify();
 
-      final prefs = await SharedPreferences.getInstance();
-      final customLevelsKeys =
-          prefs.getKeys().where((element) => element.startsWith('cust_levels'));
+      final sp = SharedPreferencesAsync();
+      final customLevelsKeys = await sp
+          .getKeys()
+          .then((e) => e.where((e) => e.startsWith('cust_levels')).toList());
       customLevels.clear();
-      for (var item in customLevelsKeys) {
+      for (final item in customLevelsKeys) {
         final name = item.replaceAll('cust_levels', '');
         customLevels.add(
           LevelData()
@@ -67,6 +55,9 @@ class LevelsStore extends ChangeNotifier
             ..value = item,
         );
       }
+      customLevels.sort(
+        (e1, e2) => int.parse(e1.name).compareTo(int.parse((e2.name))),
+      );
     } finally {
       getCustomLevelLoading = false;
     }
@@ -168,6 +159,7 @@ class _LevelsPageState extends State<LevelsPage>
       ),
       body: TabBarView(
         controller: tabController,
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           // Tab 1
           if (store.getLevelLoading)
@@ -175,17 +167,29 @@ class _LevelsPageState extends State<LevelsPage>
               child: CircularProgressIndicator(),
             ),
           if (!store.getLevelLoading)
-            ListView.builder(
+            GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 10,
+              ),
               itemCount: store.levels.length,
               itemBuilder: (
                 context,
                 index,
               ) {
                 final item = store.levels[index];
-                return ListTile(
-                  title: Text(
-                    item.name,
-                  ),
+                return InkWell(
+                  borderRadius: BorderRadius.circular(15),
+                  child: LayoutBuilder(builder: (context, boxConstraints) {
+                    return Center(
+                      child: Text(
+                        item.name,
+                        style: TextStyle(
+                          fontSize: (40 / 100) * boxConstraints.maxHeight,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  }),
                   onTap: () {
                     Navigator.of(context).pop('?level=${item.value}');
                   },
@@ -207,30 +211,41 @@ class _LevelsPageState extends State<LevelsPage>
                         textAlign: TextAlign.center,
                       ),
                     )
-                  : ListView.builder(
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 10,
+                      ),
                       itemCount: store.customLevels.length,
                       itemBuilder: (
                         context,
                         index,
                       ) {
                         final item = store.customLevels[index];
-                        return ListTile(
-                          title: Text(
-                            item.name,
-                          ),
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(15),
+                          child:
+                              LayoutBuilder(builder: (context, boxConstraints) {
+                            return Center(
+                              child: Text(
+                                item.name,
+                                style: TextStyle(
+                                  fontSize:
+                                      (40 / 100) * boxConstraints.maxHeight,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }),
                           onTap: () {
                             Navigator.of(context).pop(
                               '?customLevel=${item.value}',
                             );
                           },
-                          trailing: IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              Navigator.of(context).pop(
-                                '?customLevel=${item.value}&edit=1',
-                              );
-                            },
-                          ),
+                          onLongPress: () {
+                            Navigator.of(context).pop(
+                              '?customLevel=${item.value}&edit=1',
+                            );
+                          },
                         );
                       },
                     ),

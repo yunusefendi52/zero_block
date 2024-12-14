@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
+import 'package:quiver/strings.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:tuple/tuple.dart';
 import 'package:zero_block/components/play_timer.dart';
@@ -324,26 +325,6 @@ class _MyHomePageState extends State<MyHomePage> {
           late final editWidgets = Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 15,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                ),
-                child: TextField(
-                  decoration: const InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                  ),
-                  controller: nameController,
-                  onChanged: (v) {
-                    _store.name.value = v;
-                  },
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -396,7 +377,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           icon: const Icon(
                             Icons.keyboard_arrow_down,
                           ),
-                          label: Text('LEVEL $data'),
+                          label: Text(
+                            'LEVEL ${isBlank(widget.customLevelId) ? data : 'CUSTOM $data'}',
+                          ),
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                           ),
@@ -469,6 +452,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   if (!widget.edit) const PlayTimer(),
                   if (!widget.edit) playWidgets,
+                  if (widget.edit) editWidgets,
                 ],
               ),
             ),
