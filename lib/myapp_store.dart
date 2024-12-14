@@ -154,7 +154,7 @@ class Player {
   );
 }
 
-const periodic = Duration(milliseconds: 1000);
+const periodic = Duration(milliseconds: 1);
 
 class _LevelIdData {
   late String name;

@@ -22,8 +22,9 @@ class _PlayTimerState extends State<PlayTimer> {
         final hours = data.inHours % 24;
         final minutes = data.inMinutes % 60;
         final seconds = data.inSeconds % 60;
+        final milliseconds = data.inMilliseconds % 1000;
         final readable =
-            '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+            '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}.${milliseconds.toString().padLeft(3, '0')}';
         return Text(
           readable,
           style: const TextStyle(
