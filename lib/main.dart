@@ -509,10 +509,10 @@ class PlayerTile extends StatefulWidget {
   _PlayerTileState createState() => _PlayerTileState();
 }
 
+bool completedDialogShown = false;
+
 class _PlayerTileState extends State<PlayerTile> with TickerProviderStateMixin {
   Player? get playerItem => widget.player;
-
-  bool completedDialogShown = false;
 
   late final _scaleAnimiation = AnimationController(
     vsync: this,
@@ -827,124 +827,130 @@ class _PlayerTileState extends State<PlayerTile> with TickerProviderStateMixin {
     final playersLength = myStore.players.value
         .where((element) => element.type.value == PlayerType.main)
         .length;
-    final allPlayersCompleted = myStore.players.value
-            .where((element) => element.isMainPlayerCompleted)
-            .length ==
-        playersLength;
+    final mainPlayersLength = myStore.players.value
+        .where((element) => element.isMainPlayerCompleted)
+        .length;
+    final allPlayersCompleted = mainPlayersLength == playersLength;
     if (kDebugMode) {
-      print('Is all players completed $allPlayersCompleted');
+      print(
+        'Is all players completed $allPlayersCompleted, mainPlayersLength: $mainPlayersLength, playersLength: $playersLength',
+      );
     }
     if (allPlayersCompleted) {
       myStore.stopTimer();
 
-      if (!completedDialogShown) {
-        Future show() async {
-          await showDialog(
-            context: context,
-            builder: (context) {
-              final partyPopper = Image.asset(
-                'assets/partypopper.png',
-                height: 24,
-              );
-              return Dialog(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: 80,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 15,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            partyPopper,
-                            const SizedBox(
-                              width: 10,
+      Future show() async {
+        if (completedDialogShown) {
+          print('completedDialogShown shown');
+          return;
+        }
+        await showDialog(
+          context: context,
+          builder: (context) {
+            final partyPopper = Image.asset(
+              'assets/partypopper.png',
+              height: 24,
+            );
+            return Dialog(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 80,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          partyPopper,
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          const Text(
+                            'Good job',
+                            style: TextStyle(
+                              fontSize: 28,
                             ),
-                            const Text(
-                              'Good job',
-                              style: TextStyle(
-                                fontSize: 28,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            partyPopper,
-                          ],
-                        ),
-                        MyAppStoreProvider(
-                          store: myStore,
-                          child: const PlayTimer(),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          partyPopper,
+                        ],
+                      ),
+                      MyAppStoreProvider(
+                        store: myStore,
+                        child: const PlayTimer(),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            key: const Key('close-finished'),
+                            icon: const Icon(Icons.close),
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.refresh),
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              await myStore.reset(false);
+                            },
+                          ),
+                          if (myStore.customLevel == null ||
+                              myStore.customLevel!.isEmpty)
                             IconButton(
-                              key: const Key('close-finished'),
-                              icon: const Icon(Icons.close),
+                              icon: const Icon(Icons.chevron_right),
                               onPressed: () async {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.refresh),
-                              onPressed: () async {
-                                await myStore.reset(false);
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            if (myStore.customLevel == null ||
-                                myStore.customLevel!.isEmpty)
-                              IconButton(
-                                icon: const Icon(Icons.chevron_right),
-                                onPressed: () async {
-                                  final nextLevelInt = myStore.nextLevel();
-                                  if (nextLevelInt != -1) {
-                                    final levelId =
-                                        nextLevelInt.toStringAsFixed(0);
-                                    try {
-                                      final _ = await rootBundle.load(
-                                        'assets/levels/$levelId.json',
-                                      );
-                                      var index = 0;
-                                      Navigator.of(context)
-                                          .pushNamedAndRemoveUntil(
-                                              '/?level=$levelId', (r) {
-                                        if (index == 1) {
-                                          return false;
-                                        }
-
-                                        index++;
-                                        return true;
-                                      });
-                                    } catch (e) {
-                                      // TODO: Find a way to check if the file is not found instead of this
-                                      if (kDebugMode) {
-                                        print(e);
+                                completedDialogShown = false;
+                                myStore.players.value = [];
+                                final nextLevelInt = myStore.nextLevel();
+                                if (nextLevelInt != -1) {
+                                  final levelId =
+                                      nextLevelInt.toStringAsFixed(0);
+                                  try {
+                                    final _ = await rootBundle.load(
+                                      'assets/levels/$levelId.json',
+                                    );
+                                    var index = 0;
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            '/?level=$levelId', (r) {
+                                      if (index == 1) {
+                                        return false;
                                       }
+
+                                      index++;
+                                      return true;
+                                    });
+                                  } catch (e) {
+                                    // TODO: Find a way to check if the file is not found instead of this
+                                    if (kDebugMode) {
+                                      print(e);
                                     }
                                   }
-                                },
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
+                                }
+                              },
+                            ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
-          );
-          completedDialogShown = false;
-        }
-
-        completedDialogShown = true;
-        show();
+              ),
+            );
+          },
+        );
+        completedDialogShown = false;
       }
+
+      show();
+      completedDialogShown = true;
     }
   }
 }
