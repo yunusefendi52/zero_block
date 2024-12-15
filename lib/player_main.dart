@@ -21,21 +21,8 @@ class PlayerMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Draggable<Player>(
-      data: playerItem,
-      feedback: const SizedBox(),
-      onDragStarted: () {
-        final store = MyAppStoreProvider.of(context).store;
-        if (store.firstTimeMove) {
-          store.firstTimeMove = false;
-          store.startTimer();
-        }
-        _scaleAnimiation.forward();
-      },
-      onDragEnd: (_) {
-        _scaleAnimiation.reverse();
-      },
-      child: TileItemContainer(
+    final store = MyAppStoreProvider.of(context).store;
+    final child = TileItemContainer(
         // color: const Color(0xff543A26),
         // borderColor: const Color(0xff9B6D46),
         color: const Color(0xff664E4C),
@@ -52,8 +39,29 @@ class PlayerMain extends StatelessWidget {
               );
             },
           ),
-        ),
-      ),
+        ));
+    return ValueListenableBuilder<bool>(
+      valueListenable: store.editMode,
+      builder: (context, data, child) {
+        return data
+            ? child!
+            : Draggable<Player>(
+                data: playerItem,
+                feedback: const SizedBox(),
+                onDragStarted: () {
+                  if (store.firstTimeMove) {
+                    store.firstTimeMove = false;
+                    store.startTimer();
+                  }
+                  _scaleAnimiation.forward();
+                },
+                onDragEnd: (_) {
+                  _scaleAnimiation.reverse();
+                },
+                child: child!,
+              );
+      },
+      child: child,
     );
   }
 }
