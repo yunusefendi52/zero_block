@@ -190,6 +190,8 @@ class MyAppStore {
 
   bool firstTimeMove = true;
 
+  String? shareLevel;
+
   void startTimer() {
     timer.startTimer(timerCallback);
   }
@@ -240,9 +242,13 @@ class MyAppStore {
   static Future<_LevelIdData?> _getLevelDataFromId({
     String? customLevel,
     String? levelId,
+    String? shareLevel,
   }) async {
     String jsonString = '';
-    if (!isBlank(customLevel)) {
+    if (isNotBlank(shareLevel)) {
+      final jsonStringBase64 = shareLevel!;
+      jsonString = utf8.decode(base64Decode(jsonStringBase64));
+    } else if (!isBlank(customLevel)) {
       final sp = SharedPreferencesAsync();
       final jsonStringBase64 = (await sp.getString(customLevel!))!;
       jsonString = utf8.decode(base64Decode(jsonStringBase64));
@@ -303,6 +309,7 @@ class MyAppStore {
         final level = await _getLevelDataFromId(
           levelId: levelId,
           customLevel: customLevel,
+          shareLevel: shareLevel,
         );
         if (level == null) {
           if (kDebugMode) {

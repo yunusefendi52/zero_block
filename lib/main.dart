@@ -15,6 +15,7 @@ import 'package:zero_block/tile_item_container.dart';
 import 'package:zero_block/tile_picker.dart';
 import 'package:zero_block/tiles/player_enemy.dart';
 import 'package:zero_block/utils.dart';
+import 'package:zero_block/utils/utils.dart';
 
 import 'myapp_store.dart';
 
@@ -175,9 +176,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      final shareLevel = getPlayShareLevel();
       _store.levelId = widget.levelId;
       _store.customLevel = widget.customLevelId;
       _store.editMode.value = widget.edit;
+      _store.shareLevel = shareLevel;
+      removePlayShareLevel();
       _store.reset(widget.edit).then((_) {
         if (widget.edit) {
           nameController!.text = _store.name.value;
@@ -462,7 +466,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.all(5),
                 // Important, so the aspect ratio is working when resized to wide landscape
                 child: Center(
-                  child: mainTiles,
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: _store.isResetting,
+                    child: mainTiles,
+                    builder: (context, data, child) {
+                      return data ? const CircularProgressIndicator(
+                        color: Colors.white,
+                      ) : child!;
+                    },
+                  ),
                 ),
               ),
             ),

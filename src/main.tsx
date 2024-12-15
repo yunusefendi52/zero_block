@@ -27,13 +27,17 @@ Devvit.addCustomPostType({
   height: 'tall',
   render: (context) => {
     const [webviewVisible, setWebviewVisible] = useState(false);
-    const onShowWebviewClick = () => {
+    const onLaunchGame = () => {
+      setWebviewVisible(true);
+      context.ui.webView.postMessage('myWebView', {});
+    };
+
+    const onLaunchCustomGame = () => {
       setWebviewVisible(true);
       context.ui.webView.postMessage('myWebView', {
-        type: 'initialData',
+        type: 'playShareLevel',
         data: {
-          username: '',
-          currentCounter: '',
+          level: 'eyJuYW1lIjoiMyIsInRpbGVzIjpbeyJ0eXBlIjoyLCJ2ZWN0b3IiOnsieCI6Mi4wLCJ5Ijo2LjB9LCJkYXRhIjoiLTEyMyIsImxpZmV0aW1lIjoxfSx7InR5cGUiOjIsInZlY3RvciI6eyJ4IjozLjAsInkiOjYuMH0sImRhdGEiOiItMSIsImxpZmV0aW1lIjoxfV19',
         },
       });
     };
@@ -53,7 +57,8 @@ Devvit.addCustomPostType({
           <vstack alignment="start middle">
           </vstack>
           <spacer />
-          <button onPress={onShowWebviewClick}>Launch Game</button>
+          <button onPress={onLaunchGame}>Launch Game</button>
+          <button onPress={onLaunchCustomGame}>Launch Custom Game</button>
         </vstack>
         <vstack grow={webviewVisible} height={webviewVisible ? '100%' : '0%'}>
           <vstack border="thick" borderColor="black" height={webviewVisible ? '100%' : '0%'}>

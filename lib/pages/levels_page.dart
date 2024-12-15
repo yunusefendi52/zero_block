@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:quiver/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zero_block/myapp_store.dart';
 
@@ -213,7 +214,7 @@ class _LevelsPageState extends State<LevelsPage>
                     )
                   : GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 10,
+                        crossAxisCount: 8,
                       ),
                       itemCount: store.customLevels.length,
                       itemBuilder: (
@@ -221,31 +222,85 @@ class _LevelsPageState extends State<LevelsPage>
                         index,
                       ) {
                         final item = store.customLevels[index];
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(15),
-                          child:
-                              LayoutBuilder(builder: (context, boxConstraints) {
-                            return Center(
-                              child: Text(
-                                item.name,
-                                style: TextStyle(
-                                  fontSize:
-                                      (40 / 100) * boxConstraints.maxHeight,
-                                ),
-                                textAlign: TextAlign.center,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(15),
+                                onTap: () {
+                                  Navigator.of(context).pop(
+                                    '?customLevel=${item.value}',
+                                  );
+                                },
+                                child: LayoutBuilder(
+                                    builder: (context, boxConstraints) {
+                                  return Center(
+                                    child: Text(
+                                      item.name,
+                                      style: TextStyle(
+                                        fontSize: (40 / 100) *
+                                            boxConstraints.maxHeight,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }),
                               ),
-                            );
-                          }),
-                          onTap: () {
-                            Navigator.of(context).pop(
-                              '?customLevel=${item.value}',
-                            );
-                          },
-                          onLongPress: () {
-                            Navigator.of(context).pop(
-                              '?customLevel=${item.value}&edit=1',
-                            );
-                          },
+                            ),
+                            InkWell(
+                              borderRadius: BorderRadius.circular(15),
+                              onTap: () {
+                                Navigator.of(context).pop(
+                                  '?customLevel=${item.value}&edit=1',
+                                );
+                              },
+                              child: Center(
+                                child: Text(
+                                  'EDIT',
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            InkWell(
+                              borderRadius: BorderRadius.circular(15),
+                              onTap: () async {
+                                final sp = SharedPreferencesAsync();
+                                final spLevel = await sp
+                                    .getString('cust_levels${item.name}');
+                                if (isBlank(spLevel)) {
+                                  return;
+                                }
+                                await Clipboard.setData(
+                                  ClipboardData(text: spLevel!),
+                                );
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('LEVEL COPIED'),
+                                      content: Text(
+                                        'YOU CAN SHARE THIS TO OTHER AND ENTER THE CODE WHEN STARTING THE GAME',
+                                      ),
+                                      actions: [
+                                        FilledButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text(
+                                            'OK',
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Center(child: Text('COPY')),
+                            ),
+                          ],
                         );
                       },
                     ),
