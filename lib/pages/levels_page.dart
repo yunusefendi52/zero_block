@@ -46,10 +46,10 @@ class LevelsStore extends ChangeNotifier
       final sp = SharedPreferencesAsync();
       final customLevelsKeys = await sp
           .getKeys()
-          .then((e) => e.where((e) => e.startsWith('cust_levels')).toList());
+          .then((e) => e.where((e) => e.startsWith(custLevelsKey)).toList());
       customLevels.clear();
       for (final item in customLevelsKeys) {
-        final name = item.replaceAll('cust_levels', '');
+        final name = item.replaceAll(custLevelsKey, '');
         customLevels.add(
           LevelData()
             ..name = name
@@ -269,7 +269,7 @@ class _LevelsPageState extends State<LevelsPage>
                               onTap: () async {
                                 final sp = SharedPreferencesAsync();
                                 final spLevel = await sp
-                                    .getString('cust_levels${item.name}');
+                                    .getString('$custLevelsKey${item.name}');
                                 if (isBlank(spLevel)) {
                                   return;
                                 }

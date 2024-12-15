@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:zero_block/main.dart';
 import 'package:zero_block/math_expression/math_expression.dart';
 import 'package:zero_block/tile_picker.dart';
 import 'package:quiver/strings.dart';
@@ -12,6 +13,8 @@ import 'package:collection/collection.dart';
 import 'package:zero_block/utils.dart';
 
 const animateSomeAnimatinOnMove = true;
+
+const custLevelsKey = 'cust_v2_levels';
 
 extension OffsetExtensions on Offset {
   Offset copy() {
@@ -327,19 +330,20 @@ class MyAppStore {
 
   Future<bool> saveTiles() async {
     try {
+      final tilesJson = base64Encode(utf8.encode(toJson()));
       final sp = SharedPreferencesAsync();
-      const lastCounterKey = 'level_counter';
-      var lastCount = await sp.getInt(lastCounterKey) ?? 0;
-      lastCount++;
-      final tilesJson = base64Encode(utf8.encode(toJson(lastCount)));
       if (kDebugMode) {
         print(tilesJson);
       }
       await sp.setString(
-        'cust_levels$lastCount',
+        '$custLevelsKey${name.value.trim()}',
         tilesJson,
       );
-      await sp.setInt(lastCounterKey, lastCount);
+      final lastCounter = int.tryParse(name.value);
+      if (lastCounter == null) {
+        print('Error lastCounter, not set to integer');
+      }
+      await sp.setInt(lastCounterKey, lastCounter!);
       return true;
     } catch (error) {
       // ignore: avoid_print
@@ -352,11 +356,11 @@ class MyAppStore {
     return jsonDecode(value);
   }
 
-  String toJson(int lastCount) {
-    return jsonEncode(toMap(lastCount));
+  String toJson() {
+    return jsonEncode(toMap());
   }
 
-  Map toMap(int lastCount) {
+  Map toMap() {
     final tilesOnly = players.value.where((element) {
       switch (element.type.value) {
         case PlayerType.main:
@@ -374,7 +378,7 @@ class MyAppStore {
       }
     }).toList();
     return {
-      'name': lastCount.toString(),
+      'name': name.value.trim(),
       'tiles': Player.toMapList(tilesOnly),
     };
   }

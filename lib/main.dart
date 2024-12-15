@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:quiver/strings.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 import 'package:zero_block/components/play_timer.dart';
 import 'package:zero_block/firework_completed_widget.dart';
@@ -28,6 +29,8 @@ TextStyle getTextStyle(double tileSize, double fontSize) {
 const textTileFontSize = 0.365;
 // Or as another workaround maybe show the occupied type after onEnd animation? I don't know
 const usePlayerAnimated = true;
+
+const lastCounterKey = 'level_counter_2';
 
 Future main({
   String? levelId,
@@ -158,21 +161,18 @@ class MyAppStoreProvider extends InheritedWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _store = MyAppStore();
-  late final TextEditingController? nameController;
 
   @override
   void initState() {
     super.initState();
 
     if (widget.edit) {
-      final now = DateTime.now();
-      _store.name.value =
-          'custom levels ${now.year}_${now.month}_${now.day}_${now.hour}_${now.minute}_${now.second}';
-      nameController = TextEditingController.fromValue(
-        TextEditingValue(text: _store.name.value),
-      );
-    } else {
-      nameController = TextEditingController();
+      final sp = SharedPreferencesAsync();
+      sp.getInt(lastCounterKey).then((lastCount) {
+        lastCount ??= 0;
+        lastCount++;
+        _store.name.value = '$lastCount';
+      });
     }
 
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -182,17 +182,12 @@ class _MyHomePageState extends State<MyHomePage> {
       _store.editMode.value = widget.edit;
       _store.shareLevel = shareLevel;
       removePlayShareLevel();
-      _store.reset(widget.edit).then((_) {
-        if (widget.edit) {
-          nameController!.text = _store.name.value;
-        }
-      });
+      _store.reset(widget.edit);
     });
   }
 
   @override
   void dispose() {
-    nameController?.dispose();
     super.dispose();
   }
 
@@ -440,12 +435,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          'ZERO BLOCK',
-                          style: TextStyle(
-                            fontSize: 24,
-                          ),
-                        ),
+                        ValueListenableBuilder<String>(
+                            valueListenable: _store.name,
+                            builder: (context, data, child) {
+                              return Text(
+                                'ZERO BLOCK $data',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                ),
+                              );
+                            }),
                         Text(
                           'MOVE BROWN BLOCK UNTIL IT REACHES TO 0',
                           style: TextStyle(
@@ -470,9 +469,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     valueListenable: _store.isResetting,
                     child: mainTiles,
                     builder: (context, data, child) {
-                      return data ? const CircularProgressIndicator(
-                        color: Colors.white,
-                      ) : child!;
+                      return data
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : child!;
                     },
                   ),
                 ),
