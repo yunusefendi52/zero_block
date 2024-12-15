@@ -193,7 +193,7 @@ class MyAppStore {
 
   bool firstTimeMove = true;
 
-  String? shareLevel;
+  final shareLevel = ValueNotifier<String?>(null);
 
   void startTimer() {
     timer.startTimer(timerCallback);
@@ -312,7 +312,7 @@ class MyAppStore {
         final level = await _getLevelDataFromId(
           levelId: levelId,
           customLevel: customLevel,
-          shareLevel: shareLevel,
+          shareLevel: shareLevel.value,
         );
         if (level == null) {
           if (kDebugMode) {

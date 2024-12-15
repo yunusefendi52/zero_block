@@ -1,6 +1,6 @@
 import './createPost.js';
 
-import { Devvit, useState } from '@devvit/public-api';
+import { Devvit, JSONObject, useForm, useState } from '@devvit/public-api';
 
 type WebViewMessage =
   | {
@@ -32,17 +32,37 @@ Devvit.addCustomPostType({
       context.ui.webView.postMessage('myWebView', {});
     };
 
-    const onLaunchCustomGame = () => {
-      setWebviewVisible(true);
-      context.ui.webView.postMessage('myWebView', {
-        type: 'playShareLevel',
-        data: {
-          level: 'eyJuYW1lIjoiMyIsInRpbGVzIjpbeyJ0eXBlIjoyLCJ2ZWN0b3IiOnsieCI6Mi4wLCJ5Ijo2LjB9LCJkYXRhIjoiLTEyMyIsImxpZmV0aW1lIjoxfSx7InR5cGUiOjIsInZlY3RvciI6eyJ4IjozLjAsInkiOjYuMH0sImRhdGEiOiItMSIsImxpZmV0aW1lIjoxfV19',
-        },
-      });
+    const myForm = useForm(
+      (data) => {
+        return {
+          fields: [
+            {
+              type: 'string',
+              name: 'shareLevel',
+              required: true,
+              label: 'Custom Level which you copied from Custom Level menu',
+              defaultValue: data?.shareLevel,
+            },
+          ],
+        }
+      },
+      (values) => {
+        if (values.shareLevel) {
+          setWebviewVisible(true);
+          context.ui.webView.postMessage('myWebView', {
+            type: 'playShareLevel',
+            data: {
+              level: values.shareLevel,
+            },
+          });
+        }
+      }
+    );
+
+    const onLaunchCustomGame = (data?: JSONObject | undefined) => {
+      context.ui.showForm(myForm, data)
     };
 
-    // Render the custom post type
     return (
       <vstack grow padding="small">
         <vstack
@@ -53,19 +73,36 @@ Devvit.addCustomPostType({
           <text size="xlarge" weight="bold">
             Zero Block
           </text>
+          <text size="medium" weight="regular">
+            MOVE BROWN BLOCK UNTIL IT REACHES TO 0
+          </text>
           <spacer />
           <vstack alignment="start middle">
           </vstack>
           <spacer />
           <button onPress={onLaunchGame}>Launch Game</button>
-          <button onPress={onLaunchCustomGame}>Launch Custom Game</button>
+          <spacer />
+          <button onPress={() => onLaunchCustomGame()}>Launch Custom Game</button>
         </vstack>
         <vstack grow={webviewVisible} height={webviewVisible ? '100%' : '0%'}>
           <vstack border="thick" borderColor="black" height={webviewVisible ? '100%' : '0%'}>
             <webview
               id="myWebView"
               url="index.html"
-              onMessage={(msg) => { }}
+              onMessage={(msg) => {
+                const { type, shareCustomLevel } = msg as {
+                  type: string
+                  shareCustomLevel?: string
+                }
+                if (type === 'actionMainMenu') {
+                  setWebviewVisible(false)
+                } else if (type === 'actionShowCustomGame') {
+                  setWebviewVisible(false)
+                  onLaunchCustomGame({
+                    shareLevel: shareCustomLevel || null,
+                  })
+                }
+              }}
               grow
               height={webviewVisible ? '100%' : '0%'}
             />

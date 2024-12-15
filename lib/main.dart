@@ -180,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _store.levelId = widget.levelId;
       _store.customLevel = widget.customLevelId;
       _store.editMode.value = widget.edit;
-      _store.shareLevel = shareLevel;
+      _store.shareLevel.value = shareLevel;
       removePlayShareLevel();
       _store.reset(widget.edit);
     });
@@ -376,9 +376,15 @@ class _MyHomePageState extends State<MyHomePage> {
                           icon: const Icon(
                             Icons.keyboard_arrow_down,
                           ),
-                          label: Text(
-                            'LEVEL ${isBlank(widget.customLevelId) ? data : 'CUSTOM $data'}',
-                          ),
+                          label: ValueListenableBuilder<String?>(
+                              valueListenable: _store.shareLevel,
+                              builder: (context, dataShareLevel, child) {
+                                return Text(
+                                  isBlank(dataShareLevel)
+                                      ? 'LEVEL ${isBlank(widget.customLevelId) ? data : 'CUSTOM $data'}'
+                                      : 'CUSTOM LEVEL',
+                                );
+                              }),
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                           ),
@@ -435,16 +441,40 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        ValueListenableBuilder<String>(
-                            valueListenable: _store.name,
-                            builder: (context, data, child) {
-                              return Text(
-                                'ZERO BLOCK $data',
-                                style: TextStyle(
-                                  fontSize: 24,
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: InkWell(
+                            onTap: () {
+                              showMainMenu();
+                            },
+                            borderRadius: BorderRadius.circular(15),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: 4,
+                                  ),
+                                  child: Image.asset(
+                                    'assets/menu.png',
+                                    color: Colors.white,
+                                    height: 24,
+                                  ),
                                 ),
-                              );
-                            }),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'ZERO BLOCK',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                         Text(
                           'MOVE BROWN BLOCK UNTIL IT REACHES TO 0',
                           style: TextStyle(

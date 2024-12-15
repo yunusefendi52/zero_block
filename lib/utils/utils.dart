@@ -8,3 +8,11 @@ String? getPlayShareLevel() {
 void removePlayShareLevel() {
   return u.removePlayShareLevel();
 }
+
+void showMainMenu() {
+  return u.showMainMenu();
+}
+
+void parentPostMessage(dynamic message) {
+  return u.parentPostMessage(message);
+}

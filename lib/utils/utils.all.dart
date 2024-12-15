@@ -7,3 +7,7 @@ String? getPlayShareLevel() {
 void removePlayShareLevel() {
   level = null;
 }
+
+void showMainMenu() {}
+
+void parentPostMessage(dynamic message) {}

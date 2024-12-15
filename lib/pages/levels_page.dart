@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:quiver/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zero_block/myapp_store.dart';
+import 'package:zero_block/utils/utils.dart';
 
 class LevelData {
   late String value;
@@ -285,6 +286,17 @@ class _LevelsPageState extends State<LevelsPage>
                                         'YOU CAN SHARE THIS TO OTHER AND ENTER THE CODE WHEN STARTING THE GAME',
                                       ),
                                       actions: [
+                                        OutlinedButton(
+                                          onPressed: () {
+                                            parentPostMessage({
+                                              'type': 'actionShowCustomGame',
+                                              'shareCustomLevel': spLevel,
+                                            });
+                                          },
+                                          child: Text(
+                                            'START CUSTOM GAME',
+                                          ),
+                                        ),
                                         FilledButton(
                                           onPressed: () {
                                             Navigator.of(context).pop();
