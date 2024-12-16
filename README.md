@@ -1,16 +1,12 @@
-# zero_block
+# Zero Block
 
-A new Flutter project.
+A tile-based puzzle game. What you have to do is to move brown block tile until it reaches to 0
 
-## Getting Started
+You can also create your own level and challenge others by copying the level and enter using "Launch Custom Game"
 
-This project is a starting point for a Flutter application.
+## Join the Community
 
-A few resources to get you started if this is your first Flutter project:
+Stay connected and share your Zero Block level with other players:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+https://www.reddit.com/r/zeroblock
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
